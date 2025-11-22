@@ -13,6 +13,11 @@ app.use(express.json());
 
 app.use('/api', apiRoutes);
 
+// Health check endpoint
+app.get('/', (req, res) => {
+    res.status(200).send('OK');
+});
+
 // Schedule job: Run every hour (for MVP, maybe every minute for demo?)
 // '*/1 * * * *' = every minute
 cron.schedule('*/1 * * * *', () => {
