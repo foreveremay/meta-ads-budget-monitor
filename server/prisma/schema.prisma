@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adAccounts AdAccount[]
+  lineGroups LineGroup[]
+}
+
+model AdAccount {
+  id           String   @id @default(uuid())
+  accountId    String   // Meta Ad Account ID (e.g., act_123456789)
+  name         String
+  budgetLimit  Float
+  currentSpend Float    @default(0)
+  currency     String   @default("TWD")
+  isActive     Boolean  @default(true)
+  
+  // Threshold for notification (percentage of budget remaining, e.g., 20 for 20%)
+  thresholdPercent Float @default(20.0)
+
+  clientId     String
+  client       Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  notificationLogs NotificationLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LineGroup {
+  id          String   @id @default(uuid())
+  groupId     String   // LINE Group ID
+  name        String
+  
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NotificationLog {
+  id          String   @id @default(uuid())
+  message     String
+  sentAt      DateTime @default(now())
+  
+  adAccountId String
+  adAccount   AdAccount @relation(fields: [adAccountId], references: [id], onDelete: Cascade)
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String   // bcrypt hashed password
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SystemSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
