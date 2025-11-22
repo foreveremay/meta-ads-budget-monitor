@@ -33,8 +33,8 @@ async function startServer() {
         console.error('初始化管理員失敗 (可能是資料庫未遷移):', error);
     }
 
-    app.listen(PORT, () => {
-        console.log(`伺服器運行於 http://localhost:${PORT}`);
+    app.listen(Number(PORT), '0.0.0.0', () => {
+        console.log(`伺服器運行於 http://0.0.0.0:${PORT}`);
     });
 }
 
