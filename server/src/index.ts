@@ -27,7 +27,11 @@ cron.schedule('*/1 * * * *', () => {
 
 // 初始化並啟動伺服器
 async function startServer() {
-    await initializeAdmin();
+    try {
+        await initializeAdmin();
+    } catch (error) {
+        console.error('初始化管理員失敗 (可能是資料庫未遷移):', error);
+    }
 
     app.listen(PORT, () => {
         console.log(`伺服器運行於 http://localhost:${PORT}`);
