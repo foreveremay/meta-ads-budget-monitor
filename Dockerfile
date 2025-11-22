@@ -26,5 +26,5 @@ RUN npm run build
 # 暴露端口
 EXPOSE 3000
 
-# 啟動命令 (暫時移除遷移以除錯)
-CMD ["node", "dist/index.js"]
+# 啟動命令 (最小化測試)
+CMD ["node", "simple-server.js"]
