@@ -36,7 +36,8 @@ app.use(express.static(clientDistPath));
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
-app.get('*', (req, res) => {
+// Using regex to avoid path-to-regexp error in Express 5.x with '*'
+app.get(/^(?!\/api).+/, (req, res) => {
     res.sendFile(path.join(clientDistPath, 'index.html'));
 });
 
