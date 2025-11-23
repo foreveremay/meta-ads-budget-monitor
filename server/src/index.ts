@@ -1,30 +1,26 @@
-import express from 'express';
-import cors from 'cors';
-import cron from 'node-cron';
-import apiRoutes from './routes/api';
-import { MonitorService } from './services/monitorService';
-import { initializeAdmin } from './utils/initAdmin';
+import path from 'path';
 
-// Global error handlers
-process.on('uncaughtException', (err) => {
-    console.error('Uncaught Exception:', err);
-});
+// ... (imports)
 
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-});
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(cors());
-app.use(express.json());
+// ... (middleware)
 
 app.use('/api', apiRoutes);
 
 // Health check endpoint
-app.get('/', (req, res) => {
+app.get('/health', (req, res) => {
     res.status(200).send('OK');
+});
+
+// Serve static files from the React app
+// Assuming the client build output is at ../../client/dist relative to this file (dist/index.js)
+// In Docker, we will ensure this structure exists
+const clientDistPath = path.join(__dirname, '../../client/dist');
+app.use(express.static(clientDistPath));
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(clientDistPath, 'index.html'));
 });
 
 // Schedule job: Run every hour (for MVP, maybe every minute for demo?)
