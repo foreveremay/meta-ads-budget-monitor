@@ -1,8 +1,25 @@
+import express from 'express';
+import cors from 'cors';
+import cron from 'node-cron';
 import path from 'path';
+import apiRoutes from './routes/api';
+import { MonitorService } from './services/monitorService';
+import { initializeAdmin } from './utils/initAdmin';
 
-// ... (imports)
+// Global error handlers
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+});
 
-// ... (middleware)
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
 
 app.use('/api', apiRoutes);
 
