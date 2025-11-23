@@ -31,14 +31,35 @@ app.get('/health', (req, res) => {
 // Serve static files from the React app
 // Assuming the client build output is at ../../client/dist relative to this file (dist/index.js)
 // In Docker, we will ensure this structure exists
+import fs from 'fs';
+
+// ...
+
+// Serve static files from the React app
 const clientDistPath = path.join(__dirname, '../../client/dist');
+console.log('Client Dist Path:', clientDistPath);
+if (fs.existsSync(path.join(clientDistPath, 'index.html'))) {
+    console.log('index.html found');
+} else {
+    console.error('index.html NOT found at', path.join(clientDistPath, 'index.html'));
+}
+
 app.use(express.static(clientDistPath));
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
-// Using regex to avoid path-to-regexp error in Express 5.x with '*'
-app.get(/^(?!\/api).+/, (req, res) => {
-    res.sendFile(path.join(clientDistPath, 'index.html'));
+app.use((req, res, next) => {
+    // Skip API requests
+    if (req.path.startsWith('/api')) {
+        return next();
+    }
+
+    const indexPath = path.join(clientDistPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        res.status(404).send('Frontend build not found');
+    }
 });
 
 // Schedule job: Run every hour (for MVP, maybe every minute for demo?)
