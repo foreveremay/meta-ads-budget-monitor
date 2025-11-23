@@ -36,7 +36,11 @@ import fs from 'fs';
 // ...
 
 // Serve static files from the React app
-const clientDistPath = path.join(__dirname, '../../client/dist');
+let clientDistPath = path.join(__dirname, '../../client/dist');
+if (fs.existsSync('/app/client/dist')) {
+    clientDistPath = '/app/client/dist';
+}
+
 console.log('Client Dist Path:', clientDistPath);
 if (fs.existsSync(path.join(clientDistPath, 'index.html'))) {
     console.log('index.html found');
