@@ -37,6 +37,19 @@ import fs from 'fs';
 
 // Serve static files from the React app
 let clientDistPath = path.join(__dirname, '../../client/dist');
+
+// Debug: List files in /app to understand structure
+try {
+    console.log('Listing /app:');
+    fs.readdirSync('/app').forEach(f => console.log(' -', f));
+    if (fs.existsSync('/app/client')) {
+        console.log('Listing /app/client:');
+        fs.readdirSync('/app/client').forEach(f => console.log(' -', f));
+    }
+} catch (e) {
+    console.error('Error listing directories:', e);
+}
+
 if (fs.existsSync('/app/client/dist')) {
     clientDistPath = '/app/client/dist';
 }
