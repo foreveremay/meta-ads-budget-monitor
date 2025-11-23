@@ -43,9 +43,8 @@ RUN cd server && npm run build
 # 暴露端口
 EXPOSE 3000
 
-# 啟動命令 (Railway 會先執行 cd server，所以這裡只需要執行啟動命令)
-# 注意：如果 Railway 執行了 cd server，我們就在 /app/server 下。
-# 我們的 CMD 應該假設在 /app/server 下執行，或者使用絕對路徑。
-# 為了安全起見，我們使用絕對路徑或假設在 server 目錄下。
-# 由於 Railway 強制 cd server，我們不需要在 CMD 中再 cd server。
+# 設定工作目錄為 server (Railway 會執行 cd server)
+WORKDIR /app/server
+
+# 啟動命令
 CMD ["sh", "-c", "npx prisma db push && node dist/index.js"]
