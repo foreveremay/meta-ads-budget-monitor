@@ -5,6 +5,9 @@ RUN apt-get update -y && apt-get install -y openssl
 
 WORKDIR /app
 
+# 建立 server 目錄以適配 Railway 的 "cd server" 命令
+WORKDIR /app/server
+
 # 複製 package.json 和 lock file
 COPY server/package*.json ./
 
